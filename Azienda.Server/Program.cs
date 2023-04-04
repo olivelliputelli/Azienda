@@ -26,8 +26,16 @@ if (app.Environment.IsDevelopment())
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 
-app.MapGet("api/impiegatieta", (AziendaDbContext db) => db.ImpiegatiEta.ToList());
+app.MapGet("api/impiegatieta", 
+   (AziendaDbContext db) => db.ImpiegatiEta.ToList());
 
+app.MapGet("api/dipartimenti",
+    (AziendaDbContext db) => db.Dipartimenti.ToList());
+app.MapGet("api/dipartimenti/{id}",
+    (AziendaDbContext db, int id) => db.Dipartimenti.SingleOrDefault(d => d.DipartimentoId==id));
+
+app.MapPost("/api/dipartimenti", 
+    (AziendaDbContext db, Dipartimento dip) => { db.Dipartimenti.Add(dip); db.SaveChanges(); });
 
 app.Run();
 
