@@ -4,6 +4,9 @@
 <PageTitle>Impiegati Età</PageTitle>
 
 
+Età minima:
+<input type="number" @bind-value="minimaEta" />
+
 @if (impiegatiEta == null)
 {
     <p><em>Loading...</em></p>
@@ -21,17 +24,21 @@ else
         <tbody>
             @foreach (var item in impiegatiEta)
             {
-                <tr>
-                    <td>@item.Nominativo</td>
-                    <td>@item.DataDiNascita.ToLongDateString()</td>
-                    <td>@item.Eta</td>
-                </tr>
+                @if (item.Eta >= minimaEta)
+                {
+                    <tr>
+                        <td>@item.Nominativo</td>
+                        <td>@item.DataDiNascita.ToLongDateString()</td>
+                        <td>@item.Eta</td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 }
 
 @code {
+    private int minimaEta = 0;
     private List<ImpiegatoEta> impiegatiEta;
 
     protected override async Task OnInitializedAsync()
