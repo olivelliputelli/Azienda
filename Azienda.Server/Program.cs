@@ -1,5 +1,6 @@
 using Azienda.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,6 @@ builder.Services.AddDbContext<AziendaDbContext>(opt => opt.UseSqlServer(
     @"Data Source=MSI\SQLEXPRESS;Database=AziendaDb;Integrated Security=True;Trusted_Connection=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;"));
 
 builder.Services.AddCors();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -24,20 +24,21 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseHttpsRedirection();
 
 app.MapGet("api/impiegatieta", 
    (AziendaDbContext db) => db.ImpiegatiEta.ToList());
 
 app.MapGet("api/dipartimenti",
-    (AziendaDbContext db) => db.Dipartimenti.ToList());
+   async (AziendaDbContext db) => await db.Dipartimenti.ToListAsync());
+
 app.MapGet("api/dipartimenti/{id}",
     (AziendaDbContext db, int id) => db.Dipartimenti.SingleOrDefault(d => d.DipartimentoId==id));
 
-app.MapPost("/api/dipartimenti", 
+app.MapPost("api/dipartimenti", 
     (AziendaDbContext db, Dipartimento dip) => { db.Dipartimenti.Add(dip); db.SaveChanges(); });
-app.MapDelete("/api/dipartimenti/{id}",
+app.MapDelete("api/dipartimenti/{id}",
     (AziendaDbContext db, int id) => { db.Remove(db.Dipartimenti.Find(id)); db.SaveChanges(); });
 
 app.Run();
-

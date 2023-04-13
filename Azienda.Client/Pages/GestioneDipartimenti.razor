@@ -1,0 +1,70 @@
+﻿@page "/gestionedipartimenti"
+@inject HttpClient Http
+
+<PageTitle>Dipartimenti</PageTitle>
+
+
+<h3>Gestione Dipartimenti</h3>
+
+<EditForm Model="newDipartimento" OnValidSubmit="AddDipartimento">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    Dipartimento: <InputText @bind-Value=newDipartimento.Nome />
+    Sigla provincia: <InputText @bind-Value=newDipartimento.Provincia />
+    <button type="submit">Aggiungi</button>
+</EditForm>
+
+@if (dipartimenti == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Provincia</th>
+                <th>Operazione</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in dipartimenti)
+            {
+                <tr>
+                    <td>@item.Nome</td>
+                    <td>@item.Provincia</td>
+                    <td>
+                        <button class="btn btn-danger"
+                        @onclick="@(async () => await DeleteDipartimento(item.DipartimentoId))">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Dipartimento> dipartimenti = new();
+    private Dipartimento newDipartimento = new();
+
+    private async Task AddDipartimento()
+    {
+        await Http.PostAsJsonAsync<Dipartimento>("https://localhost:7231/api/dipartimenti", newDipartimento);
+        newDipartimento = new();
+        await LoadDipartimenti();
+    }
+
+    private async Task DeleteDipartimento(int id)
+    {
+        await Http.DeleteAsync($"https://localhost:7231/api/dipartimenti/{id}");
+        await LoadDipartimenti();
+    }
+
+    protected override async Task OnInitializedAsync() => await LoadDipartimenti();
+
+    private async Task LoadDipartimenti() =>
+     dipartimenti = await Http.GetFromJsonAsync<List<Dipartimento>>("https://localhost:7231/api/dipartimenti");
+}
