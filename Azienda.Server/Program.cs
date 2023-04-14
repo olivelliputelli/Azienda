@@ -38,7 +38,19 @@ app.MapGet("api/dipartimenti/{id}",
 
 app.MapPost("api/dipartimenti", 
     (AziendaDbContext db, Dipartimento dip) => { db.Dipartimenti.Add(dip); db.SaveChanges(); });
+
+app.MapPut("api/dipartimenti",
+    (AziendaDbContext db, Dipartimento dip) => {
+        var d = db.Dipartimenti.Find(dip.DipartimentoId);
+        d.Nome = dip.Nome;
+        d.Localita = dip.Localita;
+        d.Provincia = dip.Provincia;
+        db.SaveChanges(); 
+    });
+
+
 app.MapDelete("api/dipartimenti/{id}",
     (AziendaDbContext db, int id) => { db.Remove(db.Dipartimenti.Find(id)); db.SaveChanges(); });
 
 app.Run();
+

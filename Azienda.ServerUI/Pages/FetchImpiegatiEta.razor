@@ -1,0 +1,51 @@
+﻿@page "/fetchimpiegatieta"
+@using Microsoft.EntityFrameworkCore
+
+@inject IDbContextFactory<AziendaDbContext> DbFactory
+
+<PageTitle>Impiegati Età</PageTitle>
+
+Età minima:
+<input type="number" @bind-value="minimaEta" />
+
+@if (impiegatiEta == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Impiegato</th>
+                <th>Nato il</th>
+                <th>Età</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in impiegatiEta)
+            {
+                @if (item.Eta >= minimaEta)
+                {
+                    <tr>
+                        <td>@item.Nominativo</td>
+                        <td>@item.DataDiNascita.ToLongDateString()</td>
+                        <td>@item.Eta</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private int minimaEta = 0;
+    private List<ImpiegatoEta> impiegatiEta;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        impiegatiEta = context.ImpiegatiEta?.ToList();
+
+    }
+}
