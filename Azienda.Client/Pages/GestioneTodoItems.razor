@@ -1,0 +1,23 @@
+﻿@page "/gestionetodoitems"
+@inject HttpClient Http
+
+@if (todoItems == null)
+{
+    <p>No Todo Items found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in todoItems)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    private TodoItem[]? todoItems;
+
+    protected override async Task OnInitializedAsync() =>
+        todoItems = await Http.GetFromJsonAsync<TodoItem[]>("https://localhost:7231/api/TodoItems");
+}

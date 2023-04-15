@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azienda.Server", "Azienda.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azienda.Client", "Azienda.Client\Azienda.Client.csproj", "{A421DD6B-E714-4C1F-877B-B2347BF5A073}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azienda.ServerUI", "Azienda.ServerUI\Azienda.ServerUI.csproj", "{8492ED63-7B02-4011-9341-F070438B2004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azienda.ServerUI", "Azienda.ServerUI\Azienda.ServerUI.csproj", "{8492ED63-7B02-4011-9341-F070438B2004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
