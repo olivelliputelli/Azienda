@@ -54,8 +54,21 @@ app.MapDelete("api/dipartimenti/{id}",
     (AziendaDbContext db, int id) => { db.Remove(db.Dipartimenti.Find(id)); db.SaveChanges(); });
 
 /*  CRUD tabella TodoItems */
-app.MapGet("api/TodoItems",
+app.MapGet("api/todoitems",
    (AziendaDbContext db) => db.TodoItems.ToList());
+app.MapPost("api/todoitems",
+    (AziendaDbContext db, TodoItem t) => { db.TodoItems.Add(t); db.SaveChanges(); });
+
+app.MapPut("api/todoitems/{id}",
+    (AziendaDbContext db, TodoItem t) => {
+        var vt = db.TodoItems.Find(t.Id);
+        vt.Name = t.Name;
+        vt.IsComplete = t.IsComplete;
+        db.SaveChanges();
+    });
+
+app.MapDelete("api/todoitems/{id}",
+    (AziendaDbContext db, long id) => { db.Remove(db.TodoItems.Find(id)); db.SaveChanges(); });
 
 app.Run();
 
