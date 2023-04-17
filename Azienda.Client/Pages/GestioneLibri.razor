@@ -1,0 +1,38 @@
+﻿@page "/fetchlibri"
+@inject HttpClient Http
+
+@if (libri == null)
+{
+    <p>Loading..</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in libri)
+        {
+            <li>
+                @item.Title di <strong>@item.Author</strong>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private const string ServiceEndpoint = "https://walibri.azurewebsites.net/api/books";
+    private BookDetails[]? libri;
+
+    protected override async Task OnInitializedAsync() => 
+          libri = await Http.GetFromJsonAsync<BookDetails[]>(ServiceEndpoint);
+
+    public class BookDetails
+    {    
+        public string Id { get; set; }
+        public string Author { get; set; } 
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Genre { get; set; }
+        public decimal Price { get; set; }
+        public DateTime PublishDate { get; set; }
+    }
+}
+
