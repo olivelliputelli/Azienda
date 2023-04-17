@@ -31,7 +31,7 @@ app.UseHttpsRedirection();
 app.MapGet("api/impiegatieta", 
    (AziendaDbContext db) => db.ImpiegatiEta.ToList());
 
-/* CRUD tabella Impiegati */
+/* CRUD tabella Dipartimenti */
 app.MapGet("api/dipartimenti",
    async (AziendaDbContext db) => await db.Dipartimenti.ToListAsync());
 
@@ -41,7 +41,7 @@ app.MapGet("api/dipartimenti/{id}",
 app.MapPost("api/dipartimenti", 
     (AziendaDbContext db, Dipartimento dip) => { db.Dipartimenti.Add(dip); db.SaveChanges(); });
 
-app.MapPut("api/dipartimenti",
+app.MapPut("api/dipartimenti/{id}",
     (AziendaDbContext db, Dipartimento dip) => {
         var d = db.Dipartimenti.Find(dip.DipartimentoId);
         d.Nome = dip.Nome;

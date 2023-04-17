@@ -5,12 +5,12 @@
 
 <h3>Gestione Dipartimenti</h3>
 
-<EditForm Model="newDipartimento" OnValidSubmit="AddDipartimento">
+<EditForm Model="newEditDipartimento" OnValidSubmit="AddEditDipartimento">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    Dipartimento: <InputText @bind-Value=newDipartimento.Nome />
-    Sigla provincia: <InputText @bind-Value=newDipartimento.Provincia />
-    <button type="submit">Aggiungi</button>
+    Dipartimento: <InputText @bind-Value=newEditDipartimento.Nome />
+    Sigla provincia: <InputText @bind-Value=newEditDipartimento.Provincia />
+    <button type="submit">@(isAdd ? "Aggiungi" : "Salva Modifiche")</button>
 </EditForm>
 
 @if (dipartimenti == null)
@@ -34,6 +34,10 @@ else
                     <td>@item.Nome</td>
                     <td>@item.Provincia</td>
                     <td>
+                        <button class="btn btn-warning"
+                        @onclick="@(async () => EditItem(item.DipartimentoId))">
+                            Modifica
+                        </button>
                         <button class="btn btn-danger"
                         @onclick="@(async () => await DeleteDipartimento(item.DipartimentoId))">
                             Delete
@@ -46,19 +50,39 @@ else
 }
 
 @code {
+    private bool isAdd = true;
+    private const string ServiceEndpoint = "https://localhost:7231/api/dipartimenti";
     private List<Dipartimento> dipartimenti = new();
-    private Dipartimento newDipartimento = new();
+    private Dipartimento newEditDipartimento = new();
 
-    private async Task AddDipartimento()
+    private async Task AddEditDipartimento()
     {
-        await Http.PostAsJsonAsync<Dipartimento>("https://localhost:7231/api/dipartimenti", newDipartimento);
-        newDipartimento = new();
+        if (isAdd)
+        {
+            await Http.PostAsJsonAsync<Dipartimento>(ServiceEndpoint, newEditDipartimento);
+        }
+        else
+        {
+            await Http.PutAsJsonAsync<Dipartimento>($"{ServiceEndpoint}/{newEditDipartimento.DipartimentoId}", newEditDipartimento);
+        }
+        isAdd = true;
+        newEditDipartimento = new();
         await LoadDipartimenti();
     }
 
+    private void EditItem(int id)
+    {
+        if (dipartimenti is not null)
+        {
+            newEditDipartimento = dipartimenti.Single(i => i.DipartimentoId == id);
+            isAdd = false;
+        }
+    }
+
+
     private async Task DeleteDipartimento(int id)
     {
-        await Http.DeleteAsync($"https://localhost:7231/api/dipartimenti/{id}");
+        await Http.DeleteAsync($"{ServiceEndpoint}/{id}");
         await LoadDipartimenti();
     }
 
